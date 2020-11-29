@@ -99,6 +99,7 @@ extern string gCurrentTime;
 bool GateControl::accessAllowed(CardNumber number)
 {
 
+	Transaction();
 	AuthorizationMapIterator it = authorizationMap_.find(number);
 	if (it != authorizationMap_.end()){
 		return true;
@@ -151,7 +152,14 @@ bool GateControl::deleteAuthorization(CardNumber number)
 void GateControl::getAllAuthorizations(AuthorizationVector& authorizationVector)
 {
 
-
+	if (!authorizationMap_.empty()){
+		for(AuthorizationMapIterator it = authorizationMap_.begin(); it != authorizationMap_.end(); it++){
+			authorizationVector.push_back(it->second);
+		}
+	}
+	else {
+		authorizationVector.clear();
+	}
 
 }
 
