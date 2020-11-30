@@ -113,12 +113,12 @@ bool GateControl::addAuthorization(CardNumber number, const string& name, const 
 {
 
 	AuthorizationMapIterator it = authorizationMap_.find(number);
-	if (it != authorizationMap_.end()){
-		return false;
-	}
-	else {
+	if (it == authorizationMap_.end()){
 		authorizationMap_.insert(std::pair<CardNumber,Authorization>(number, Authorization(number, name, startTime,endTime)));
 		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -128,7 +128,10 @@ bool GateControl::changeAuthorization(CardNumber number, const string& name, con
 
 	AuthorizationMapIterator it = authorizationMap_.find(number);
 	if (it != authorizationMap_.end()){
-		authorizationMap_.insert(it, std::pair<CardNumber, Authorization>(number, Authorization(number, name, startTime,endTime)));
+		//authorizationMap_.insert(it, std::pair<CardNumber, Authorization>(number, Authorization(number, name, startTime,endTime)));
+		it->second.name_ = name;
+		it->second.startTime_ = startTime;
+		it->second.endTime_ = endTime;
 		return true;
 	}
 	return false;
@@ -182,7 +185,10 @@ bool GateControl::getCardAuthorization(CardNumber number, Authorization& authori
 
 	AuthorizationMapIterator it = authorizationMap_.find(number);
 	if (it != authorizationMap_.end()){
-		Authorization(number, authorization.name_, authorization.startTime_,authorization.endTime_);
+		authorization.number_ = number;
+		authorization.name_ = it->second.name_;
+		authorization.startTime_ = it->second.startTime_;
+		authorization.endTime_ = it->second.endTime_;
 		return true;
 	}
 	else {
