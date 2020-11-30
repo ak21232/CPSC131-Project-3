@@ -99,12 +99,15 @@ extern string gCurrentTime;
 bool GateControl::accessAllowed(CardNumber number)
 {
 
-	Transaction();
 	AuthorizationMapIterator it = authorizationMap_.find(number);
 	if (it != authorizationMap_.end()){
+		transactionVector_.push_back(Transaction(number,it->second.name_,gCurrentDate, gCurrentTime, true));
 		return true;
 	}
-	return false;
+	else {
+		transactionVector_.push_back(Transaction(number,it->second.name_,gCurrentDate,gCurrentTime, false));
+		return false;
+	}
 
 }
 
