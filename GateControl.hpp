@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <vector>
@@ -167,7 +167,12 @@ void GateControl::getAllAuthorizations(AuthorizationVector& authorizationVector)
 void GateControl::getAllTransactions(TransactionVector& transactionVector)
 {
 
-	//	TO DO
+	if (!transactionVector_.empty()){
+		transactionVector.assign(transactionVector_.begin(), transactionVector_.end());
+	}
+	else {
+		transactionVector.clear();
+	}
 
 }
 
@@ -190,6 +195,15 @@ bool GateControl::getCardAuthorization(CardNumber number, Authorization& authori
 void GateControl::getCardTransactions(CardNumber number, TransactionVector& transactionVector)
 {
 
-
+	if (!transactionVector_.empty()){
+		for(TransactionVectorIterator it = transactionVector_.begin();it != transactionVector_.end(); it++){
+			if (it->number_ == number){
+				transactionVector.push_back(*it);
+			}
+		}
+	}
+	else {
+		transactionVector.clear();
+	}
 
 }
