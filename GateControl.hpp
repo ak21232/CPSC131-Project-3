@@ -115,14 +115,8 @@ bool GateControl::accessAllowed(CardNumber number)
 bool GateControl::addAuthorization(CardNumber number, const string& name, const string& startTime, const string& endTime)
 {
 
-	AuthorizationMapIterator it = authorizationMap_.find(number);
-	if (it == authorizationMap_.end()){
-		authorizationMap_.insert(std::pair<CardNumber,Authorization>(number, Authorization(number, name, startTime,endTime)));
-		return true;
-	}
-	else {
-		return false;
-	}
+	return authorizationMap_.emplace(std::pair<CardNumber,Authorization>(number, Authorization(number, name, startTime,endTime))).second;
+
 }
 
 
@@ -131,7 +125,6 @@ bool GateControl::changeAuthorization(CardNumber number, const string& name, con
 
 	AuthorizationMapIterator it = authorizationMap_.find(number);
 	if (it != authorizationMap_.end()){
-		//authorizationMap_.insert(it, std::pair<CardNumber, Authorization>(number, Authorization(number, name, startTime,endTime)));
 		it->second.name_ = name;
 		it->second.startTime_ = startTime;
 		it->second.endTime_ = endTime;
@@ -174,6 +167,7 @@ void GateControl::getAllTransactions(TransactionVector& transactionVector)
 {
 
 	if (!transactionVector_.empty()){
+
 		transactionVector.assign(transactionVector_.begin(), transactionVector_.end());
 	}
 	else {
@@ -205,7 +199,7 @@ void GateControl::getCardTransactions(CardNumber number, TransactionVector& tran
 {
 
 	if (!transactionVector_.empty()){
-		for(TransactionVectorIterator it = transactionVector_.begin();it != transactionVector_.end(); it++){
+		for(TransactionVectorIterator it = transactionVector_.begin();it <= transactionVector_.end(); it++){
 			if (it->number_ == number){
 				transactionVector.push_back(*it);
 			}
